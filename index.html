@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mausam</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap');
+    </style>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="flex justify-center items-center h-full">
+    <div class="w-[80%] m-auto p-10 flex flex-col justify-center items-center gap-10 rounded-xl shadow-xl font-quicksand text-black bg-blue-200">
+        <div class="w-full flex flex-row justify-between items-center">
+            <div class="flex flex-col gap-3 text-start">
+                <div class="text-4xl font-medium">{%city%}, {%country%}</div>
+                <div id="date" class="text-xl font-normal">1<sup>st</sup> January, 1970</div>
+                <div id="weather-details" class="flex flex-col gap-3">
+                    <span class="text-2xl font-semibold">{%weathertype%}</span>
+                </div>
+            </div>
+            <div id="time" class="text-center text-3xl font-medium">--:--:-- --</div>
+            <div class="flex flex-col gap-5 text-end">
+                <div class="text-8xl font-light">{%currenttemp%}&deg;</div>
+                <div class="text-4xl font-light">{%mintemp%}&deg; / {%maxtemp%}&deg;</div>
+            </div>
+        </div>
+        <div class="p-5 w-full rounded-lg flex flex-row justify-between items-center text-white bg-blue-800">
+            <p class="text-lg font-normal">Temperatures are in <span class="font-semibold">Celsius (&deg;C)</span></p>
+        </div>
+    </div>
+
+    <script>
+        const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        const monthsOfYear = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+        const dateSuffixes = ['st', 'nd', 'rd', 'th'];
+        const weatherDiv = document.getElementById('weather-details');
+        const weatherType = '{%weathertype%}';
+
+        setInterval(() => {
+            getCurrentDate();
+            getCurrentTime();
+        }, 1000);
+
+        switch (weatherType) {
+            case 'Sunny':
+                weatherDiv.innerHTML = '<span class="material-symbols-outlined text-5xl">sunny</span>' + weatherDiv.innerHTML;
+                break;
+            case 'Clouds':
+                weatherDiv.innerHTML = '<span class="material-symbols-outlined text-5xl">cloudy</span>' + weatherDiv.innerHTML;
+                break;
+            case 'Drizzle':
+            case 'Rain':
+                weatherDiv.innerHTML = '<span class="material-symbols-outlined text-5xl">rainy</span>' + weatherDiv.innerHTML;
+                break;
+            case 'Thunderstorm':
+                weatherDiv.innerHTML = '<span class="material-symbols-outlined text-5xl">thunderstorm</span>' + weatherDiv.innerHTML;
+                break;
+            case 'Snow':
+                weatherDiv.innerHTML = '<span class="material-symbols-outlined text-5xl">snowing</span>' + weatherDiv.innerHTML;
+                break;
+            case 'Mist':
+            case 'Smoke':
+            case 'Haze':
+            case 'Dust':
+            case 'Fog':
+            case 'Sand':
+            case 'Ash':
+            case 'Squall':
+            case 'Tornado':
+                weatherDiv.innerHTML = '<span class="material-symbols-outlined text-5xl">mist</span>' + weatherDiv.innerHTML;
+                break;
+            case 'Clear':
+                weatherDiv.innerHTML = '<span class="material-symbols-outlined text-5xl">clear_day</span>' + weatherDiv.innerHTML;
+                break;
+            default:
+                weatherDiv.innerHTML = '<span class="material-symbols-outlined text-5xl">clear_day</span>' + weatherDiv.innerHTML;
+                break;
+        }
+
+        function getCurrentTime(){
+            const datetime = new Date();
+
+            let hours = datetime.getHours().toString();
+            let minutes = datetime.getMinutes().toString();
+            let seconds = datetime.getSeconds().toString();
+            let meridian = 'AM';
+            
+            if(parseInt(hours) < 10)
+                hours = hours.padStart(2, '0');
+            else if(parseInt(hours) > 12){
+                hours = (parseInt(hours) - 12).toString().padStart(2, 0);
+                meridian = 'PM';
+            }
+
+            if(parseInt(minutes) < 10)
+                minutes = minutes.padStart(2, '0');
+            
+            if(parseInt(seconds) < 10)
+                seconds = seconds.padStart(2, '0');
+
+            document.getElementById('time').innerHTML = `${hours}:${minutes}:${seconds} ${meridian}`;
+        }
+
+        function getCurrentDate(){
+            const datetime = new Date();
+
+            const day = daysOfWeek[datetime.getDay()];
+            const date = datetime.getDate();
+
+            let suffix = '';
+            if(parseInt(date / 10) === 1)
+                suffix = dateSuffixes[dateSuffixes.length - 1];
+            else{
+                const rem = date % 10;
+                if(rem < 4 && rem > 0)
+                    suffix = dateSuffixes[rem - 1];
+                else
+                    suffix = dateSuffixes[dateSuffixes.length - 1];
+            }
+
+            const month = monthsOfYear[datetime.getMonth()];
+            const year = datetime.getFullYear();
+
+            document.getElementById('date').innerHTML = `${day}, ${date}<sup>${suffix}</sup> ${month} ${year}`;
+        }
+    </script>
+</body>
+</html>
